@@ -69,6 +69,7 @@ const HomePage: React.FC = () => {
         setLoading(true);
         const data = await ExcelUtil.importSheet(file);
         data.shift();
+        data.shift();
         setFaceSheet(data);
       } catch (error) {
         console.log(error);

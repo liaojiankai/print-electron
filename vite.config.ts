@@ -17,14 +17,23 @@ export default defineConfig({
       'styles': path.join(__dirname, 'src/assets/styles'),
     },
   },
+  build: {
+    rollupOptions: {
+      // Here are some C/C++ plugins that can't be built properly.
+      external: [
+        'ipp',
+        'pdfkit'
+      ],
+    },
+  },
   plugins: [
     react(),
     electron({
       include: [
         'electron',
         'preload',
-        'ipp',
-        'pdfkit'
+        // 'ipp',
+        // 'pdfkit'
       ],
       transformOptions: {
         sourcemap: !!process.env.VSCODE_DEBUG,
@@ -43,6 +52,12 @@ export default defineConfig({
     // Use Node.js API in the Renderer-process
     renderer({
       nodeIntegration: true,
+      // optimizeDeps: {
+      //   include: [
+      //     {name: 'ipp', type: 'commonjs'},
+      //     {name: 'pdfkit', type: 'commonjs'},
+      //   ]
+      // }
     }),
   ],
   server: process.env.VSCODE_DEBUG ? (() => {

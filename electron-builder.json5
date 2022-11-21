@@ -12,7 +12,8 @@
   },
   files: [
     "dist-electron",
-    "dist"
+    "dist",
+    "node_modules/**/*"
   ],
   win: {
     target: [
