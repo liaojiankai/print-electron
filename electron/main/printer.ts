@@ -4,17 +4,16 @@ process.env.DIST_ELECTRON = join(__dirname, '../..')
 process.env.DIST = join(process.env.DIST_ELECTRON, '../dist')
 process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_ELECTRON, '../public')
 
-
 const ipp = require('ipp');
 const PDFDocument = require('pdfkit');
-const fs = require('fs');
-const path = require('path');
 import { join } from 'path'
 import { app } from 'electron'
+// import * as ipp from 'ipp';
+import * as fs from 'fs';
+// import {default as PDFDocument} from 'pdfkit';
 
 // const image = require('./1668475008502.png');
 // const ttf = require('./jizihefengchisongzhenghei.ttf');
-
 const basePath = process.env.PUBLIC;
 
 const createPDF = async (data?: any, event?: any) => {
@@ -61,6 +60,7 @@ const printPDF = (ippurl: string, pdf: any): Promise<any> => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     printer.execute('Print-Job', msg, (err: any, res: never) => {
+      console.log('res: ', res)
       resolve([err, res]);
     });
   });

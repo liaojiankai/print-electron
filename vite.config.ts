@@ -23,6 +23,8 @@ export default defineConfig({
       include: [
         'electron',
         'preload',
+        'ipp',
+        'pdfkit'
       ],
       transformOptions: {
         sourcemap: !!process.env.VSCODE_DEBUG,

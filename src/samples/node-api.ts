@@ -7,7 +7,7 @@ ipcRenderer.on('main-process-message', (_event, ...args) => {
 })
 
 ipcRenderer.on('printData', (_event, args) => {
-  console.log('[Receive Main-process message]:', args)
+  console.log('[Receive printData message]:', args)
 })
 
 lstat(cwd()).then(stats => {

@@ -83,7 +83,7 @@ async function createWindow() {
       // console.log('xxxx', list[0].options['device-uri']);
       event.reply('printData', ['print', list]);
       const doc = await fs.readFileSync(`${printer.basePath}/output.pdf`);
-      // printer.printPDF(list[0].options['device-uri'], doc);
+      printer.printPDF(list[0].options['device-uri'], doc);
       event.reply('printData', ['filePath', `${printer.basePath}/output.pdf`]);
     } catch (error) {
       console.log(error)
