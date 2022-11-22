@@ -56,6 +56,7 @@ function importExcel(file: Blob) {
         let data: any[] = [];
         for (const sheet in workbook.Sheets) {
           if (workbook.Sheets.hasOwnProperty(sheet)) {
+            console.log('workbook.Sheets[sheet]: ', workbook.Sheets[sheet])
             data = data.concat(XLSX.utils.sheet_to_json(workbook.Sheets[sheet]));
           }
         }

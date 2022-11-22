@@ -20,10 +20,10 @@ export default defineConfig({
   build: {
     rollupOptions: {
       // Here are some C/C++ plugins that can't be built properly.
-      external: [
-        'ipp',
-        'pdfkit'
-      ],
+      // external: [
+      //   'ipp',
+      //   'pdfkit'
+      // ],
     },
   },
   plugins: [
@@ -54,9 +54,9 @@ export default defineConfig({
       nodeIntegration: true,
       // optimizeDeps: {
       //   include: [
-      //     {name: 'ipp', type: 'commonjs'},
-      //     {name: 'pdfkit', type: 'commonjs'},
-      //   ]
+      //     { name: "ipp", type: "commonjs" },
+      //     { name: "pdfkit", type: "commonjs" },
+      //   ],
       // }
     }),
   ],

@@ -51,8 +51,8 @@ const HomePage: React.FC = () => {
             icon={<PrinterOutlined />}
             disabled={!faceSheet.length}
             onClick={() => {
-              // eslint-disable-next-line @typescript-eslint/no-use-before-define
-              printRender(item);
+              console.log({...item, ...weightBill})
+              ipcRenderer.send('printData', {...item, ...weightBill});
             }}
           />,
         ];
@@ -78,14 +78,6 @@ const HomePage: React.FC = () => {
       return false;
     },
   };
-
-  const printRender = (item: any) => {
-    ipcRenderer.send('printData', item);
-    // window.electron.ipcRenderer.sendMessage('printData', item);
-  };
-  // window.electron.ipcRenderer.on('printData', (arg) => {
-  //   console.log('printData: ', arg);
-  // });
 
   return (
     <PageContainer
@@ -127,16 +119,16 @@ const HomePage: React.FC = () => {
           <Upload key="ipload" {...props}>
             <Button icon={<UploadOutlined />}>上传过磅单</Button>
           </Upload>,
-          <Button
-            key="primary"
-            icon={<PrinterOutlined />}
-            disabled={!faceSheet.length}
-            onClick={() => {
-              window.print();
-            }}
-          >
-            打印当前页
-          </Button>,
+          // <Button
+          //   key="primary"
+          //   icon={<PrinterOutlined />}
+          //   disabled={!faceSheet.length}
+          //   onClick={() => {
+          //     window.print();
+          //   }}
+          // >
+          //   打印当前页
+          // </Button>,
           <Button
             key="primary"
             icon={<PrinterOutlined />}

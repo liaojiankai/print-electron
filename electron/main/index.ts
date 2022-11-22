@@ -16,7 +16,6 @@ import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
 import printer from './printer'
-import * as fs from 'fs'
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -37,7 +36,9 @@ const indexHtml = join(process.env.DIST, 'index.html')
 
 async function createWindow() {
   win = new BrowserWindow({
-    title: 'Main window',
+    title: '打印过磅单',
+    width: 1080,
+    height: 800,
     icon: join(process.env.PUBLIC, 'favicon.svg'),
     webPreferences: {
       preload,
@@ -52,7 +53,6 @@ async function createWindow() {
     win.webContents.openDevTools()
   } else {
     win.loadFile(indexHtml)
-    win.webContents.openDevTools()
   }
 
   // Test actively push message to the Electron-Renderer
@@ -68,27 +68,39 @@ async function createWindow() {
 
   ipcMain.on('printData', async (event, data) => {
     console.log('>>>>printData:')
-    try {
-      event.reply('printData', ['1']);
-      event.reply('printData', ['filePath1', `${printer.basePath}/output.pdf`]);
+    // try {
+    //   event.reply('printData', ['1']);
+    //   event.reply('printData', ['filePath1', `${printer.basePath}/output.pdf`]);
 
-      // console.log('xxxx');
-      const list: any = await win?.webContents.getPrintersAsync();
-      event.reply('printData', ['print ipp', list[0].options['device-uri']]);
+    //   // console.log('xxxx');
+    //   const list: any = await win?.webContents.getPrintersAsync();
+    //   event.reply('printData', ['print ipp', list[0].options['device-uri']]);
+    console.log('data: ', data)
+    await printer.createPDF(data);
+    //   event.reply('printData', ['2']);
 
-      await printer.createPDF({}, event);
-      event.reply('printData', ['2']);
+    //   // console.log('xxxx');
+    //   // console.log('xxxx', list[0].options['device-uri']);
+    //   event.reply('printData', ['print', list]);
+    //   const doc = await fs.readFileSync(`${printer.basePath}/output.pdf`);
+    //   // printer.printPDF(list[0].options['device-uri'], doc);
+    //   event.reply('printData', ['filePath', `${printer.basePath}/output.pdf`]);
+    // } catch (error) {
+    //   console.log(error)
+    //   event.reply('printData', ['err', JSON.stringify(error)]);
+    // }
 
-      // console.log('xxxx');
-      // console.log('xxxx', list[0].options['device-uri']);
-      event.reply('printData', ['print', list]);
-      const doc = await fs.readFileSync(`${printer.basePath}/output.pdf`);
-      // printer.printPDF(list[0].options['device-uri'], doc);
-      event.reply('printData', ['filePath', `${printer.basePath}/output.pdf`]);
-    } catch (error) {
-      console.log(error)
-      event.reply('printData', ['err', JSON.stringify(error)]);
-    }
+    setTimeout(() => {
+      console.log('process.env.PUBLIC:', process.env.PUBLIC)
+      let winPrint = new BrowserWindow({width: 800, height: 600, show: false });
+      winPrint.loadURL(`file://${process.env.PUBLIC}/output.pdf`);
+      // if pdf is loaded start printing.
+      winPrint.webContents.on('did-finish-load', () => {
+        winPrint.webContents.print({silent: false});
+        // console.log('xxxx')
+        winPrint = null
+      });
+    }, 200)
   });
 }
 
