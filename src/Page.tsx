@@ -11,7 +11,8 @@ import { Upload, Button, Form, Descriptions } from 'antd';
 import React, { useState } from 'react';
 import type { ProColumns } from '@ant-design/pro-components';
 import ExcelUtil from './utils/xlsx';
-import { ipcRenderer } from 'electron'
+import { ipcRenderer } from 'electron';
+import NP from 'number-precision';
 
 type WeightBill = {
   serialNo: string;
@@ -36,7 +37,7 @@ const HomePage: React.FC = () => {
   const columns: ProColumns[] = [
     { dataIndex: 'A', title: '日期' },
     { dataIndex: 'B', title: '车号' },
-    { dataIndex: 'C', title: '原发/Kg' },
+    { dataIndex: 'C', title: '毛重/Kg' },
     { dataIndex: 'D', title: '毛重/Kg' },
     { dataIndex: 'E', title: '皮重/Kg' },
     {
@@ -70,7 +71,8 @@ const HomePage: React.FC = () => {
         const data = await ExcelUtil.importSheet(file);
         data.shift();
         data.shift();
-        setFaceSheet(data);
+        console.log('data: ', data);
+        setFaceSheet(data.map(item => ({...item, E: NP.minus(item.C, item.D)})));
       } catch (error) {
         console.log(error);
       }
