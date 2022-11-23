@@ -15,7 +15,8 @@ process.env.PUBLIC = app.isPackaged ? process.env.DIST : join(process.env.DIST_E
 import { app, BrowserWindow, shell, ipcMain } from 'electron'
 import { release } from 'os'
 import { join } from 'path'
-import printer from './printer'
+import { Printer, USBAdapter } from '@pokusew/escpos';
+
 
 // Disable GPU Acceleration for Windows 7
 if (release().startsWith('6.1')) app.disableHardwareAcceleration()
@@ -68,39 +69,26 @@ async function createWindow() {
 
   ipcMain.on('printData', async (event, data) => {
     console.log('>>>>printData:')
-    // try {
-    //   event.reply('printData', ['1']);
-    //   event.reply('printData', ['filePath1', `${printer.basePath}/output.pdf`]);
-
-    //   // console.log('xxxx');
-    //   const list: any = await win?.webContents.getPrintersAsync();
-    //   event.reply('printData', ['print ipp', list[0].options['device-uri']]);
-    console.log('data: ', data)
-    await printer.createPDF(data);
-    //   event.reply('printData', ['2']);
-
-    //   // console.log('xxxx');
-    //   // console.log('xxxx', list[0].options['device-uri']);
-    //   event.reply('printData', ['print', list]);
-    //   const doc = await fs.readFileSync(`${printer.basePath}/output.pdf`);
-    //   // printer.printPDF(list[0].options['device-uri'], doc);
-    //   event.reply('printData', ['filePath', `${printer.basePath}/output.pdf`]);
-    // } catch (error) {
-    //   console.log(error)
-    //   event.reply('printData', ['err', JSON.stringify(error)]);
-    // }
-
-    setTimeout(() => {
-      console.log('process.env.PUBLIC:', process.env.PUBLIC)
-      let winPrint = new BrowserWindow({width: 800, height: 600, show: false });
-      winPrint.loadURL(`file://${process.env.PUBLIC}/output.pdf`);
-      // if pdf is loaded start printing.
-      winPrint.webContents.on('did-finish-load', () => {
-        winPrint.webContents.print({silent: false});
-        // console.log('xxxx')
-        winPrint = null
+    const device = new USBAdapter();
+    const printer = new Printer(device);
+    device
+      .open()
+      .then(() => {
+        printer
+          .font('a')
+          .align('ct')
+          .style('bu')
+          .size(1, 1)
+          .text(`收货: ${data.serialNo}`)
+          .text(data.A)
+          .text(data.B)
+          .text(data.gargoNo)
+          .text(data.C)
+          .text(data.D)
+          .text(data.E)
+          .text(data.remark)
+          .cut();
       });
-    }, 200)
   });
 }
 
